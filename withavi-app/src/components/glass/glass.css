@@ -1,0 +1,197 @@
+/* GlassPanel material system
+ *
+ * NOTE: This material assumes a non-flat graphite background
+ * (see src/app/globals.css). Replacing the background with flat black
+ * will significantly degrade the glass effect.
+ *
+ * GlassPanel is for structural zones only (top bar, command, timeline,
+ * right context, bottom strip, overlays). Do not nest GlassPanels.
+ */
+
+/* Base container: NO blur here; variants own blur strength. */
+.glass-panel {
+  position: relative;
+  border-radius: 20px;
+
+  /* Base tint (variants refine opacity) */
+  background: rgba(15, 23, 42, 0.6);
+
+  /* Edge + inner highlight */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  overflow: hidden;
+  transform: translateZ(0);
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
+}
+
+/* Tier 1: primary panels (CommandSurface, Timeline, TopStatusBar) */
+.glass-panel--primary {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(15, 23, 42, 0.62);
+}
+
+/* Tier 2: secondary panels (RightContext, Inspector, Viewer, BottomStrip) */
+.glass-panel--secondary {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: rgba(15, 23, 42, 0.52);
+}
+
+/* Specular highlight: assumes light source from top-left. */
+.glass-highlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0.04) 40%,
+    rgba(255, 255, 255, 0.02) 70%
+  );
+}
+
+/* Subtle depth tint */
+.glass-tint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background: radial-gradient(
+    circle at top left,
+    rgba(255, 255, 255, 0.05),
+    transparent 45%
+  );
+}
+
+/* Content plane */
+.glass-content {
+  position: relative;
+  z-index: 3;
+  padding: 24px;
+}
+
+.glass-panel:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 28px 55px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.glass-panel:active {
+  transform: translateY(-1px);
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-panel:focus-within {
+  outline: 2px solid #4f9cf9;
+  outline-offset: 2px;
+}
+
+/* Reduced motion: disable lifts/transforms */
+@media (prefers-reduced-motion: reduce) {
+  .glass-panel,
+  .glass-panel:hover,
+  .glass-panel:active {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Mobile blur fallback: soften blur on small screens for GPU health. */
+@media (max-width: 768px) {
+  .glass-panel--primary,
+  .glass-panel--secondary {
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+}
+
+/* GlassButton variants */
+
+.glass-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.glass-button--primary {
+  background: rgba(79, 156, 249, 0.12);
+  border-color: rgba(79, 156, 249, 0.35);
+  color: #f9fafb;
+}
+
+.glass-button--secondary {
+  background: rgba(15, 23, 42, 0.58);
+  border-color: rgba(148, 163, 184, 0.45);
+  color: #e5e7eb;
+}
+
+.glass-button--ghost {
+  background: transparent;
+  border-color: rgba(148, 163, 184, 0.35);
+  color: #9ca3af;
+}
+
+.glass-button--danger {
+  background: rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.4);
+  color: #fecaca;
+}
+
+.glass-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+}
+
+.glass-button:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+}
+
+.glass-button:focus-visible {
+  outline: 2px solid #4f9cf9;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-button,
+  .glass-button:hover,
+  .glass-button:active {
+    transition: none;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
